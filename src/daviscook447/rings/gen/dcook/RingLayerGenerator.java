@@ -11,7 +11,7 @@ public class RingLayerGenerator {
 	public static final float TWO_PI = (float) Math.PI * 2;
 	
 	public RingLayerGenerator() {}
-	
+
 	public ArrayList<Ring> generateLayerWithSomeNumberOfRemovals(float angle, float radius, float thickness, Color color, int priority,
 			 int count, int countRemoved, float percentFull) {
 		// randomly remove countRemoved slices
