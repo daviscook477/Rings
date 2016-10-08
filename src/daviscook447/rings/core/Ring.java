@@ -3,7 +3,6 @@ package daviscook447.rings.core;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Path2D;
-import java.awt.image.BufferedImage;
 
 public class Ring implements Comparable<Ring> {
 
@@ -49,8 +48,24 @@ public class Ring implements Comparable<Ring> {
 		return this.priority;
 	}
 	
-	public void drawToBuffer(BufferedImage image, float centerX, float centerY, Color drawColor) {
-		Graphics2D g2D = image.createGraphics();
+	/**
+	 * Gets the radius of this ring
+	 * @return the radius of this ring
+	 */
+	public float radius() {
+		return this.radius;
+	}
+
+	/**
+	 * Gets the thickness of this ring
+	 * @return the thickness of this ring
+	 */
+	public float thickness() {
+		return this.thickness;
+	}
+	
+	
+	public void drawRing(Graphics2D g2D, float centerX, float centerY, Color drawColor) {
 		float farCircumference = angleDelta*(radius+thickness);
 		float nearCircumference = angleDelta*radius;
 		int farPoints = (int) Math.ceil(farCircumference * POINTS_PER_UNIT_LENGTH);
@@ -78,17 +93,29 @@ public class Ring implements Comparable<Ring> {
 	
 	/**
 	 * Draws a ring to a buffer
-	 * @param image the buffer to which to draw
+	 * @param g2D the graphics context being used to draw the ring
 	 * @param centerX the x coordinate of the center point for the ring
 	 * @param centerY the y coordinate of the center point for the ring
 	 */
-	public void drawToBuffer(BufferedImage image, float centerX, float centerY) {
-		drawToBuffer(image, centerX, centerY, this.color);
+	public void drawRing(Graphics2D g2D, float centerX, float centerY) {
+		drawRing(g2D, centerX, centerY, this.color);
 	}
 
 	@Override
 	public int compareTo(Ring other) {
 		return (this.priority() - other.priority());
+	}
+	
+	public int compareToByPriority(Ring other) {
+		return compareTo(other);
+	}
+	
+	public float compareToByRadius(Ring other) {
+		return (this.radius() - other.radius());
+	}
+	
+	public float compareToBySize(Ring other) {
+		return ((this.radius() + this.thickness()) - (other.radius() + other.thickness()));
 	}
 	
 }

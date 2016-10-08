@@ -1,6 +1,9 @@
 package daviscook447.rings.main;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -8,11 +11,13 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
+import javax.swing.JButton;
+import javax.swing.JFrame;
 
 import daviscook447.rings.core.Ring;
 import daviscook447.rings.core.RingDrawer;
+import daviscook447.rings.core.RingPanel;
 import daviscook447.rings.gen.dcook.RandomRingLayerGenerator;
-import daviscook447.rings.gen.dcook.RingLayerGenerator;
 
 public class Main {
 
@@ -47,6 +52,48 @@ public class Main {
 		}
 	}
 	
+	public static final int PADDING = 20;
+	
+	public static final ArrayList<Ring> getRandomRings(int widthPX, int heightPX) {
+		Random rng = new Random();
+		RandomRingLayerGenerator rrlg = new RandomRingLayerGenerator(widthPX, heightPX);
+		ArrayList<Ring> rings = new ArrayList<Ring>();
+		for (int i = 0; i < rng.nextInt(10)+3; i++) {
+			rings.addAll(rrlg.generateRandomWithRemovals());
+		}
+		return rings;
+	}
+	
+	public static JButton buildChangeButton(ArrayList<Ring> rings, int widthPX, int heightPX, RingPanel ringPanel, JFrame jFrame) {
+		JButton jButton = new JButton("Change Rings");
+		jButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				rings.removeAll(rings);
+				rings.addAll(getRandomRings(widthPX, heightPX));
+				ringPanel.setRingList(rings);
+				jFrame.remove(jButton);
+				jFrame.add(jButton, BorderLayout.WEST);
+				jFrame.pack();
+				ringPanel.repaint();
+			}
+			
+		});
+		return jButton;
+	}
+	
+	public static JFrame buildJFrame(RingPanel ringPanel, ArrayList<Ring> rings, int widthPX, int heightPX) {
+		JFrame jFrame = new JFrame();
+		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		jFrame.add(ringPanel,BorderLayout.CENTER);
+		jFrame.add(buildChangeButton(rings, widthPX, heightPX, ringPanel, jFrame), BorderLayout.WEST);
+		jFrame.pack();
+		jFrame.setVisible(true);
+		jFrame.setTitle("Ring Generator");
+		return jFrame;
+	}
+	
 	// main program handles command line arguments, generating the hex grids, coloring them, and saving the image
 	public static void main(String[] args) {
 		// command line args and defaults
@@ -58,11 +105,15 @@ public class Main {
 		if (args.length>=2) {
 			heightPX = Integer.parseInt(args[1]);
 		}
-		Random rng = new Random();
-		for (int i = 0; i < 10; i++) {
-			generateRandom(widthPX, heightPX, rng.nextInt(10)+3, "radial_gradients_norm__stuff_"+i+".png");
-			System.out.println("PWNED " + i + " NOOBS!");
-		}
+		
+		ArrayList<Ring> rings = getRandomRings(widthPX, heightPX);
+		RingPanel ringPanel = new RingPanel(rings, PADDING);
+		JFrame jFrame = buildJFrame(ringPanel, rings, widthPX, heightPX);
+		
+//		for (int i = 0; i < 10; i++) {
+//			generateRandom(widthPX, heightPX, rng.nextInt(10)+3, "radial_gradients_norm__stuff_"+i+".png");
+//			System.out.println("PWNED " + i + " NOOBS!");
+//		}
 	}
 	
 }

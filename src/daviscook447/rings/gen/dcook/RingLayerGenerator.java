@@ -25,7 +25,6 @@ public class RingLayerGenerator {
 			intsInRange.remove(rng.nextInt(intsInRange.size()));
 		}
 		for (int i : intsInRange) {
-			System.out.println("removing " + i);
 			removals[i] = true;
 		}
 		 // use new boolean[count] b/c it auto initializes to false
