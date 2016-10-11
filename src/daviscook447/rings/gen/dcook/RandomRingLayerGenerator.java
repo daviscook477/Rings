@@ -9,27 +9,18 @@ import daviscook447.rings.core.Ring;
 
 public class RandomRingLayerGenerator {
 
-	private int width, height;
-	
 	private Random rng;
 	private ColorPalette cp;
 	private RingLayerGenerator rlg;
+	private RandomRingLayerGeneratorSettings settings;
 	
 	public static final int NUMBER_OF_COLORS = 24;
 	
-	public RandomRingLayerGenerator(int width, int height) {
+	public RandomRingLayerGenerator(RandomRingLayerGeneratorSettings settings) {
 		rng = new Random();
-		this.width = width;
-		this.height = height;
 		rlg = new RingLayerGenerator();
 		cp = new ColorPalette(Color.RED, Color.GREEN, NUMBER_OF_COLORS);
-	}
-	
-	private static float smallerOf(float f0, float f1) {
-		if (f0 < f1) {
-			return f0;
-		}
-		return f1;
+		this.settings = settings;
 	}
 	
 	public float randomInRange(float min, float max) {
@@ -43,16 +34,12 @@ public class RandomRingLayerGenerator {
 		return randomInRange(MIN_ANGLE, MAX_ANGLE);
 	}
 	
-	public static final float MIN_RADIUS = 0.0f;
-	
 	public float randomRadius() {
-		return randomInRange(MIN_RADIUS, 0.5f * smallerOf(width, height));
+		return randomInRange(settings.minRadius, settings.maxRadius);
 	}
 	
-	public static final float MIN_THICKNESS = 2.0f;
-	
 	public float randomThickness(float radius) {
-		return randomInRange(MIN_THICKNESS, 0.5f * smallerOf(width - 2*radius, height - 2*radius));
+		return randomInRange(settings.minThickness, settings.maxRadius - radius);
 	}
 	
 	public Color randomColor() {
@@ -60,19 +47,14 @@ public class RandomRingLayerGenerator {
 		return new Color(rng.nextInt(255), rng.nextInt(255), rng.nextInt(255));
 	}
 	
-	public static final float MIN_COUNT = 1;
-	public static final float MAX_COUNT = 12;
 	public static final float MAX_COUNT_PER_RADII = 0.15f;
 
 	public int randomCount(float radius) {
-		return(int) randomInRange(MIN_COUNT, MAX_COUNT); //MAX_COUNT_PER_RADII * radius);
+		return(int) randomInRange(settings.minCount, settings.maxCount); //MAX_COUNT_PER_RADII * radius);
 	}
-	
-	public static final float MIN_PERCENT_FULL = 0.2f;
-	public static final float MAX_PERCENT_FULL = 1.0f;
-	
+
 	public float randomPercentFull() {
-		return randomInRange(MIN_PERCENT_FULL, MAX_PERCENT_FULL);
+		return randomInRange(settings.minPercentFull, settings.maxPercentFull);
 	}
 	
 	public ArrayList<Ring> generateRandom() {

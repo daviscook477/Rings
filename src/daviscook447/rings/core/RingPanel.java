@@ -22,6 +22,13 @@ public class RingPanel extends JPanel {
 	private ArrayList<Ring> rings;
 	private int width, height, padding;
 	
+	public RingPanel(ArrayList<Ring> rings, int width, int height) {
+		this.rings = rings;
+		this.width = width;
+		this.height = height;
+		this.setPreferredSize(new Dimension(width, height));
+	}
+	
 	public RingPanel(ArrayList<Ring> rings, int padding) {
 		this.rings = rings;
 		this.padding = padding;
@@ -31,12 +38,15 @@ public class RingPanel extends JPanel {
 		this.setPreferredSize(new Dimension(width, height));
 	}
 	
-	public void setRingList(ArrayList<Ring> rings) {
+	public void setRingList(ArrayList<Ring> rings, boolean resize) {
 		this.rings = rings;
 		Collections.sort(rings, (ring0, ring1) -> (int) ring0.compareToBySize(ring1)); // first sort by radius
-		float maxSize = rings.get(rings.size() - 1).radius() + rings.get(rings.size() - 1).thickness();
-		width = height = 2 * (int) (maxSize + padding);
-		this.setPreferredSize(new Dimension(width, height));
+		if (resize) {
+			float maxSize = rings.get(rings.size() - 1).radius() + rings.get(rings.size() - 1).thickness();
+			width = height = 2 * (int) (maxSize + padding);
+			this.setPreferredSize(new Dimension(width, height));
+		}
+
 	}
 	
 	@Override
